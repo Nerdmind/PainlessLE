@@ -33,6 +33,7 @@ LETSENCRYPT_ENDPOINT="https://acme-v01.api.letsencrypt.org/directory"
 #===============================================================================
 # Define required paths
 #===============================================================================
+     OPENSSLCONF="/etc/ssl/openssl.cnf"
      REQUESTFILE=`mktemp -u /tmp/letsencrypt.XXXX.csr`
     CONFIDENTIAL="${ARGUMENT_DIRECTORY%/}/confidential.pem"
     INTERMEDIATE="${ARGUMENT_DIRECTORY%/}/intermediate.pem"
@@ -42,7 +43,7 @@ CERTIFICATE_FULL="${ARGUMENT_DIRECTORY%/}/certificate_full.pem"
 #===============================================================================
 # Generate Certificate-Signing-Request (CSR)
 #===============================================================================
-openssl req -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName=${ARGUMENT_HOSTNAMES}")) \
+openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=${ARGUMENT_HOSTNAMES}")) \
 -new -sha256 -key "${CONFIDENTIAL}" -out "${REQUESTFILE}" -outform der -reqexts SAN -subj "/"
 
 #===============================================================================
