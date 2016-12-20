@@ -18,9 +18,8 @@
 [ -z "$2" ] && echo 'Missing argument $2' && exit 1 || ARGUMENT_HOSTNAMES="$2"
 
 #===============================================================================
-# Information about the Let's encrypt account
+# Define the ACME endpoint address
 #===============================================================================
-LETSENCRYPT_MAILADDR="john.doe@example.org"
 LETSENCRYPT_ENDPOINT="https://acme-v01.api.letsencrypt.org/directory"
 #LETSENCRYPT_ENDPOINT="https://acme-staging.api.letsencrypt.org/directory"
 
@@ -69,8 +68,8 @@ fi
 #===============================================================================
 # Execute Let's Encrypt and accomplish the ACME challenge to get the certificate
 #===============================================================================
-certbot certonly --authenticator standalone --text --server "${LETSENCRYPT_ENDPOINT}" --email "${LETSENCRYPT_MAILADDR}" \
---csr "${REQUESTFILE}" --cert-path "${CERTIFICATE_ONLY}" --fullchain-path "${CERTIFICATE_FULL}" --chain-path "${INTERMEDIATE}"
+certbot certonly --authenticator standalone --text --server "${LETSENCRYPT_ENDPOINT}" --csr "${REQUESTFILE}" \
+--cert-path "${CERTIFICATE_ONLY}" --fullchain-path "${CERTIFICATE_FULL}" --chain-path "${INTERMEDIATE}"
 
 #===============================================================================
 # Adjust the UNIX permissions with owner and group for the new created files
