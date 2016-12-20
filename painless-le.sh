@@ -42,7 +42,7 @@ CERTIFICATE_FULL="${ARGUMENT_DIRECTORY%/}/certificate_full.pem"
 #===============================================================================
 # Generate Certificate-Signing-Request (CSR)
 #===============================================================================
-openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=${ARGUMENT_HOSTNAMES}")) \
+openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`echo ${ARGUMENT_HOSTNAMES} | sed "s/:/,DNS:/"`")) \
 -new -sha256 -key "${CONFIDENTIAL}" -out "${REQUESTFILE}" -outform der -reqexts SAN -subj "/"
 
 #===============================================================================

@@ -10,7 +10,7 @@ Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for tes
 ## Arguments
 1. `ARGUMENT_DIRECTORY` contains a string with the directory path where the certificates should be installed. This directory should already contain a manually created RSA private key for the Certificate-Signing-Request (CSR). It's always a good idea to handle the RSA private keys manually because you may use [HTTP Public-Key-Pinning (HPKP)](https://tools.ietf.org/html/rfc7469) so that you must ensure, that the RSA private key does not change.
 
-2. `ARGUMENT_HOSTNAMES` contains a string with the hostnames to include within the certificate. The string must be formatted as follows because he get injected directly into to OpenSSL command to generate the Certificate-Signing-Request: `DNS:example.org,DNS:blog.example.org,DNS:shop.example.org`
+2. `ARGUMENT_HOSTNAMES` contains a colon (`:`) separated string with the DNS hostnames to include within the certificate. The string must be formatted as follows, without containing colons anywhere except **between** the hostnames: `example.org:blog.example.org:shop.example.org`
 
 ## Example
 Lets assume that you want to get a single X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have a RSA private key with the correct UNIX file permissions stored within the following example directory with the name `confidential.pem`:
@@ -20,7 +20,7 @@ Lets assume that you want to get a single X.509 certificate from the Let's Encry
 
 The next step is to execute `painless-le.sh` and providing the only two command-line arguments which are described above. In this example, the complete command-line string with the desired install directory `/etc/painless-le/example.org` and the desired hostnames `example.org`, `blog.example.org` and `shop.example.org` looks as follows:
 
-	painless-le.sh /etc/painless-le/example.org/ "DNS:example.org,DNS:blog.example.org,DNS:shop.example.org"
+	painless-le.sh /etc/painless-le/example.org/ "example.org:blog.example.org:shop.example.org"
 
 The certbot client will now contacting the ACME challenge servers and runs a temporary standalone webserver on your machine to accomplish the ACME challenge. If all works fine, you have nothing to intervene. After the command was successfully executed, you will see your certificates within your desired install directory (the certificates inherit the permissions of the `confidential.pem` file) and you're done:
 
