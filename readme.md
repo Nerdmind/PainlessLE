@@ -1,6 +1,9 @@
 # PainlessLE: Let's Encrypt Certificate Issuing
 Painless issuing a single [X.509 certificate](https://tools.ietf.org/html/rfc5280) for a bunch of hostnames from the **Let's Encrypt** Certification Authority (CA) without having a HTTP server installed (or for those people who do not want to touch their HTTP web directories and place a specific file to accomplish the ACME challenge). PainlessLE assumes that there is already a manually created RSA private key which is used for the Certificate-Signing-Request (CSR) by OpenSSL. The location for the RSA private key is defined within the `"CONFIDENTIAL"` variable and the path should exist with the correct UNIX file permissions.
 
+## Requirements
+The [Certbot client](https://certbot.eff.org/) must be installed on your machine because PainlessLE uses this piece of software to communicate over the [ACME protocol](https://tools.ietf.org/html/draft-ietf-acme-acme-01) with the ACME endpoint of Let's Encrypt and runs the ACME challenge. There are no known further requirements for the usage of PainlessLE on Debian GNU/Linux at this time.
+
 ## Configuration
 Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for testing purposes. You also can define a command within `LETSENCRYPT_COMMAND_BEFORE` to shutting down a running webserver to release the HTTP(S) port for the standalone webserver before certbot runs the ACME challenge. You can restart your webserver after the ACME challenge is completed within `LETSENCRYPT_COMMAND_AFTER`.
 
