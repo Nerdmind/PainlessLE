@@ -3,14 +3,13 @@
 # Painless Let's Encrypt Certificate Issuing [Thomas Lange <code@nerdmind.de>] #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 #                                                                              #
-# PainlessLE makes it easy to issue a X.509 certificate from the Let's Encrypt #
-# Certification Authority (CA) for a bunch of hostnames without already having #
-# a HTTP server installed. PainlessLE assumes that there is already a manually #
-# created RSA private which is used for the Certificate-Signing-Request (CSR). #
-# The location for the RSA private key is defined within "${CONFIDENTIAL}".    #
+# Easily get an X.509 certificate from the Let's Encrypt Certificate Authority #
+# for a bunch of hostnames without having an HTTP server installed. The script #
+# assumes that you have an existing RSA private key stored within your desired #
+# install directory (with the filename which is defined in "${CONFIDENTIAL}"). #
 #                                                                              #
-# ARGUMENT_DIRECTORY: Full path to the install directory for the certificates  #
-# ARGUMENT_HOSTNAMES: Hostnames for CSR: DNS:example.org,DNS:blog.example.org  #
+# ARGUMENT_DIRECTORY: Full path to the install directory for the certificates. #
+# ARGUMENT_HOSTNAMES: List of hostnames for the certificate: example.org[:...] #
 #                                                                              #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
