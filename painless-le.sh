@@ -13,8 +13,27 @@
 #                                                                              #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
-[ -z "$1" ] && echo 'Missing argument $1' && exit 1 || ARGUMENT_DIRECTORY="$1"
-[ -z "$2" ] && echo 'Missing argument $2' && exit 1 || ARGUMENT_HOSTNAMES="$2"
+#===============================================================================
+# Parsing command-line arguments with the getopts shell builtin
+#===============================================================================
+while getopts :i:h: opt
+do
+	case $opt in
+		i) ARGUMENT_DIRECTORY="$OPTARG" ;;
+		h) ARGUMENT_HOSTNAMES="$OPTARG" ;;
+	esac
+done
+
+#===============================================================================
+# Checking if all required command-line arguments are provided
+#===============================================================================
+[ -z "${ARGUMENT_DIRECTORY}" ] && echo "$0: Missing argument: [-i directory]" >&2
+[ -z "${ARGUMENT_HOSTNAMES}" ] && echo "$0: Missing argument: [-h hostnames]" >&2
+
+#===============================================================================
+# Abort execution if required command-line argument is missing
+#===============================================================================
+[ -z "${ARGUMENT_DIRECTORY}" ] || [ -z "${ARGUMENT_HOSTNAMES}" ] && exit 1
 
 #===============================================================================
 # Define the ACME endpoint address
@@ -48,7 +67,7 @@ openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`
 # Checking if Certificate-Signing-Request (CSR) was successfully created
 #===============================================================================
 if [ $? != 0 ]; then
-	echo "[ABORTING]: Certificate-Signing-Request (CSR) could not be created!"
+	echo "$0: Certificate-Signing-Request (CSR) could not be created!" >&2
 	exit 1
 fi
 
