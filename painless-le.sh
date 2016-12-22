@@ -8,8 +8,8 @@
 # assumes that you have an existing RSA private key stored within your desired #
 # install directory (with the filename which is defined in "${CONFIDENTIAL}"). #
 #                                                                              #
-# ARGUMENT_DIRECTORY: Full path to the install directory for the certificates. #
-# ARGUMENT_HOSTNAMES: List of hostnames for the certificate: example.org[:...] #
+# ARGUMENT [-i]: Full path to the install directory for the certificates.      #
+# ARGUMENT [-h]: List of hostnames for the certificate: example.org[:...]      #
 #                                                                              #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
