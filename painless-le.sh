@@ -51,7 +51,7 @@ LETSENCRYPT_ENDPOINT="https://acme-v01.api.letsencrypt.org/directory"
 # Define required paths
 #===============================================================================
      OPENSSLCONF="/etc/ssl/openssl.cnf"
-     REQUESTFILE=`mktemp -u /tmp/letsencrypt.XXXX.csr`
+     REQUESTFILE=`mktemp /tmp/painless-le.XXXXXXXXXX.csr`
     CONFIDENTIAL="${ARGUMENT_DIRECTORY%/}/confidential.pem"
     INTERMEDIATE="${ARGUMENT_DIRECTORY%/}/intermediate.pem"
 CERTIFICATE_ONLY="${ARGUMENT_DIRECTORY%/}/certificate_only.pem"
