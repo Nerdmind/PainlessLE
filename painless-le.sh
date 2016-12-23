@@ -58,6 +58,11 @@ CERTIFICATE_ONLY="${ARGUMENT_DIRECTORY%/}/certificate_only.pem"
 CERTIFICATE_FULL="${ARGUMENT_DIRECTORY%/}/certificate_full.pem"
 
 #===============================================================================
+# Delete Certificate-Signing-Request (CSR) file on exit
+#===============================================================================
+trap 'rm ${REQUESTFILE}' EXIT
+
+#===============================================================================
 # Generate Certificate-Signing-Request (CSR)
 #===============================================================================
 openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`echo ${ARGUMENT_HOSTNAMES} | sed "s/:/,DNS:/g"`")) \
