@@ -8,19 +8,27 @@
 # assumes that you have an existing RSA private key stored within your desired #
 # install directory (with the filename which is defined in "${CONFIDENTIAL}"). #
 #                                                                              #
-# ARGUMENT [-i]: Full path to the install directory for the certificates.      #
-# ARGUMENT [-h]: List of hostnames for the certificate: example.org[:...]      #
+# OPTION [-i]: Full path to the install directory for the certificates.        #
+# OPTION [-h]: List of hostnames for the certificate: example.org[:...]        #
+# OPTION [-K]: Filename for the existing RSA private key relative to [-i]      #
+# OPTION [-I]: Target filename for the intermediate cert relative to [-i]      #
+# OPTION [-C]: Target filename for the certificate only file relative to [-i]  #
+# OPTION [-F]: Target filename for the certificate full file relative to [-i]  #
 #                                                                              #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
 #===============================================================================
 # Parsing command-line arguments with the getopts shell builtin
 #===============================================================================
-while getopts :i:h: opt
+while getopts :i:h:K:I:C:F: opt
 do
 	case $opt in
 		i) ARGUMENT_DIRECTORY="$OPTARG" ;;
 		h) ARGUMENT_HOSTNAMES="$OPTARG" ;;
+		K) ARGUMENT_CONFIDENTIAL="$OPTARG" ;;
+		I) ARGUMENT_INTERMEDIATE="$OPTARG" ;;
+		C) ARGUMENT_CERTIFICATE_ONLY="$OPTARG" ;;
+		F) ARGUMENT_CERTIFICATE_FULL="$OPTARG" ;;
 	esac
 done
 
@@ -52,10 +60,10 @@ LETSENCRYPT_ENDPOINT="https://acme-v01.api.letsencrypt.org/directory"
 #===============================================================================
      OPENSSLCONF="/etc/ssl/openssl.cnf"
      REQUESTFILE=`mktemp /tmp/painless-le.XXXXXXXXXX.csr`
-    CONFIDENTIAL="${ARGUMENT_DIRECTORY%/}/confidential.pem"
-    INTERMEDIATE="${ARGUMENT_DIRECTORY%/}/intermediate.pem"
-CERTIFICATE_ONLY="${ARGUMENT_DIRECTORY%/}/certificate_only.pem"
-CERTIFICATE_FULL="${ARGUMENT_DIRECTORY%/}/certificate_full.pem"
+    CONFIDENTIAL="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_CONFIDENTIAL:-confidential.pem}"
+    INTERMEDIATE="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_INTERMEDIATE:-intermediate.pem}"
+CERTIFICATE_ONLY="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_CERTIFICATE_ONLY:-certificate_only.pem}"
+CERTIFICATE_FULL="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_CERTIFICATE_FULL:-certificate_full.pem}"
 
 #===============================================================================
 # Delete Certificate-Signing-Request (CSR) file on exit
