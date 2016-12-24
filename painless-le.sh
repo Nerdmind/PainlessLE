@@ -85,13 +85,6 @@ if [ $? != 0 ]; then
 fi
 
 #===============================================================================
-# Delete previous certificates from the install directory
-#===============================================================================
-[ -f "${INTERMEDIATE}" ]     && rm "${INTERMEDIATE}"
-[ -f "${CERTIFICATE_ONLY}" ] && rm "${CERTIFICATE_ONLY}"
-[ -f "${CERTIFICATE_FULL}" ] && rm "${CERTIFICATE_FULL}"
-
-#===============================================================================
 # Execute defined command BEFORE the ACME challenge is started
 #===============================================================================
 [ ! -z "${LETSENCRYPT_COMMAND_BEFORE}" ] && $($LETSENCRYPT_COMMAND_BEFORE)
@@ -100,7 +93,22 @@ fi
 # Execute Let's Encrypt and accomplish the ACME challenge to get the certificate
 #===============================================================================
 certbot certonly --authenticator standalone --text --server "${LETSENCRYPT_ENDPOINT}" --csr "${REQUESTFILE}" \
---cert-path "${CERTIFICATE_ONLY}" --fullchain-path "${CERTIFICATE_FULL}" --chain-path "${INTERMEDIATE}"
+--cert-path "${CERTIFICATE_ONLY}.$$" --fullchain-path "${CERTIFICATE_FULL}.$$" --chain-path "${INTERMEDIATE}.$$"
+
+#===============================================================================
+# Checking if Certbot has successfully accomplished the ACME challenge
+#===============================================================================
+if [ $? != 0 ]; then
+	echo "$0: Certbot could not successfully accomplish the ACME challenge." >&2
+	exit 1
+fi
+
+#===============================================================================
+# Replace previous certificates with the new obtained certificate files
+#===============================================================================
+[ -f "${INTERMEDIATE}.$$" ]     && mv "${INTERMEDIATE}.$$"     "${INTERMEDIATE}"
+[ -f "${CERTIFICATE_ONLY}.$$" ] && mv "${CERTIFICATE_ONLY}.$$" "${CERTIFICATE_ONLY}"
+[ -f "${CERTIFICATE_FULL}.$$" ] && mv "${CERTIFICATE_FULL}.$$" "${CERTIFICATE_FULL}"
 
 #===============================================================================
 # Adjust the UNIX permissions with owner and group for the new created files
