@@ -20,9 +20,9 @@
 #===============================================================================
 # Parsing command-line arguments with the getopts shell builtin
 #===============================================================================
-while getopts :i:h:K:I:C:F: opt
+while getopts :i:h:K:I:C:F: option
 do
-	case $opt in
+	case $option in
 		i) ARGUMENT_DIRECTORY="$OPTARG" ;;
 		h) ARGUMENT_HOSTNAMES="$OPTARG" ;;
 		K) ARGUMENT_CONFIDENTIAL="$OPTARG" ;;
