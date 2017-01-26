@@ -30,7 +30,7 @@ The next step is to execute `painless-le.sh` and providing the `-i` and `-h` opt
 
 	painless-le.sh -i /etc/painless-le/example.org/ -h example.org:blog.example.org:shop.example.org
 
-The certbot client will now contacting the ACME challenge servers and runs a temporary standalone webserver on your machine to accomplish the ACME challenge. If all works fine, you have nothing to intervene. After the command was successfully executed, you will see your certificates within your desired install directory (the certificates inherit the permissions of the `confidential.pem` file) and you're done:
+The certbot client will now contact the ACME challenge servers and runs a temporary standalone webserver on your machine to accomplish the ACME challenge. If all works fine, you have nothing to intervene. After the command was successfully executed, you will see your certificates within your desired install directory (the certificates inherit the permissions of the `confidential.pem` file) and you're done:
 
 	/etc/painless-le/example.org/
 	├── [-rw-r----- user     group    ]  certificate_full.pem
