@@ -87,7 +87,7 @@ fi
 #===============================================================================
 # Execute defined command BEFORE the ACME challenge is started
 #===============================================================================
-[ ! -z "${LETSENCRYPT_COMMAND_BEFORE}" ] && $($LETSENCRYPT_COMMAND_BEFORE)
+[ ! -z "${LETSENCRYPT_COMMAND_BEFORE}" ] && eval $LETSENCRYPT_COMMAND_BEFORE
 
 #===============================================================================
 # Execute Let's Encrypt and accomplish the ACME challenge to get the certificate
@@ -119,4 +119,4 @@ chown --reference "${CONFIDENTIAL}" "${INTERMEDIATE}" "${CERTIFICATE_ONLY}" "${C
 #===============================================================================
 # Execute defined command AFTER the ACME challenge is completed
 #===============================================================================
-[ ! -z "${LETSENCRYPT_COMMAND_AFTER}" ] && $($LETSENCRYPT_COMMAND_AFTER)
+[ ! -z "${LETSENCRYPT_COMMAND_AFTER}" ] && eval $LETSENCRYPT_COMMAND_AFTER
