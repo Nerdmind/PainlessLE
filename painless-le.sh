@@ -92,7 +92,7 @@ fi
 #===============================================================================
 # Execute Let's Encrypt and accomplish the ACME challenge to get the certificate
 #===============================================================================
-certbot certonly --authenticator standalone --text --server "${LETSENCRYPT_ENDPOINT}" --csr "${REQUESTFILE}" \
+certbot certonly --authenticator standalone --server "${LETSENCRYPT_ENDPOINT}" --csr "${REQUESTFILE}" \
 --cert-path "${CERTIFICATE_ONLY}.$$" --fullchain-path "${CERTIFICATE_FULL}.$$" --chain-path "${INTERMEDIATE}.$$"
 
 #===============================================================================
