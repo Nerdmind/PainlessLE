@@ -1,5 +1,5 @@
 # PainlessLE: Let's Encrypt Certificate Issuing
-Painless issuing a single [X.509 certificate](https://tools.ietf.org/html/rfc5280) for a bunch of hostnames from the **Let's Encrypt** Certification Authority (CA) without having an HTTP server installed (or for those people who do not want to touch their HTTP web directories and place a specific file to accomplish the ACME challenge). PainlessLE assumes that there is already a manually created RSA private key which is used for the Certificate-Signing-Request (CSR) by OpenSSL. The location for the RSA private key is defined within the `"CONFIDENTIAL"` variable and the path should exist with the correct UNIX file permissions.
+Painless issuing a single [X.509 certificate](https://tools.ietf.org/html/rfc5280) for a bunch of hostnames from the **Let's Encrypt** Certification Authority (CA) without having an HTTP server installed (or for those people who do not want to touch their HTTP web directories and place a specific file to accomplish the ACME challenge). PainlessLE assumes that there is already a manually created private key which is used for the Certificate-Signing-Request (CSR) by OpenSSL. The location for the private key is defined within the `"CONFIDENTIAL"` variable and the path should exist with the correct UNIX file permissions.
 
 ## Requirements
 The [Certbot client](https://certbot.eff.org/) must be installed on your machine because PainlessLE uses this piece of software to communicate over the [ACME protocol](https://tools.ietf.org/html/draft-ietf-acme-acme-01) with the ACME endpoint of Let's Encrypt and runs the ACME challenge. There are no known further requirements for using PainlessLE on Debian GNU/Linux at this time.
@@ -10,18 +10,18 @@ Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for tes
 ## Arguments
 
 ### Required command-line options:
-* `[-i]`: Contains a string with the directory path where the certificates should be installed. This directory should already contain a manually created RSA private key (filename can be overwritten by providing the `[-K]` option) for the Certificate-Signing-Request (CSR). It's always a good idea to handle the RSA private keys manually because you may use [HTTP Public-Key-Pinning (HPKP)](https://tools.ietf.org/html/rfc7469) so that you must ensure, that the RSA private key does not change.
+* `[-i]`: Contains a string with the directory path where the certificates should be installed. This directory should already contain a manually created private key (filename can be overwritten by providing the `[-K]` option) for the Certificate-Signing-Request (CSR). It's always a good idea to handle the private keys manually because you may use [HTTP Public-Key-Pinning (HPKP)](https://tools.ietf.org/html/rfc7469) so that you must ensure, that the private key does not change.
 
 * `[-h]`: Contains a colon (`:`) separated string with the DNS hostnames to include within the certificate. The string must be formatted as follows, without containing colons anywhere except **between** the hostnames: `example.org:blog.example.org:shop.example.org`
 
 ### Additional command-line options:
-* `[-K]`: Filename for the existing RSA private key relative to `[-i]`
+* `[-K]`: Filename for the existing private key relative to `[-i]`
 * `[-I]`: Target filename for the intermediate certificate relative to `[-i]`
 * `[-C]`: Target filename for the certificate only file relative to `[-i]`
 * `[-F]`: Target filename for the certificate full fiĺe relative to `[-i]`
 
 ## Example
-Lets assume that you want to get a single X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have an RSA private key with the correct UNIX file permissions stored within the following example directory with the name `confidential.pem`:
+Lets assume that you want to get a single X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have an private key with the correct UNIX file permissions stored within the following example directory with the name `confidential.pem`:
 
 	/etc/painless-le/example.org/
 	└── [-rw-r----- user     group    ]  confidential.pem
@@ -38,4 +38,4 @@ The certbot client will now contact the ACME challenge servers and runs a tempor
 	├── [-rw-r----- user     group    ]  confidential.pem
 	└── [-rw-r----- user     group    ]  intermediate.pem
 
-**Note:** The new certificates inherit the UNIX file permissions (**chmod** and **chown**) of the RSA private key `confidential.pem`!
+**Note:** The new certificates inherit the UNIX file permissions (**chmod** and **chown**) of the private key `confidential.pem`!

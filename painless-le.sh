@@ -5,12 +5,12 @@
 #                                                                              #
 # Easily get an X.509 certificate from the Let's Encrypt Certificate Authority #
 # for a bunch of hostnames without having an HTTP server installed. The script #
-# assumes that you have an existing RSA private key stored within your desired #
+# assumes that you have an existing private key stored within your desired     #
 # install directory (with the filename which is defined in "${CONFIDENTIAL}"). #
 #                                                                              #
 # OPTION [-i]: Full path to the install directory for the certificates.        #
 # OPTION [-h]: List of hostnames for the certificate: example.org[:...]        #
-# OPTION [-K]: Filename for the existing RSA private key relative to [-i]      #
+# OPTION [-K]: Filename for the existing private key relative to [-i]          #
 # OPTION [-I]: Target filename for the intermediate cert relative to [-i]      #
 # OPTION [-C]: Target filename for the certificate only file relative to [-i]  #
 # OPTION [-F]: Target filename for the certificate full file relative to [-i]  #
