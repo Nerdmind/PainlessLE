@@ -18,7 +18,7 @@ Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for tes
 * `[-K]`: Filename for the existing private key relative to `[-i]`
 * `[-I]`: Target filename for the intermediate certificate relative to `[-i]`
 * `[-C]`: Target filename for the certificate only file relative to `[-i]`
-* `[-F]`: Target filename for the certificate full fiĺe relative to `[-i]`
+* `[-F]`: Target filename for the certificate full file relative to `[-i]`
 
 ## Example
 Lets assume that you want to get a single X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have an private key with the correct UNIX file permissions stored within the following example directory with the name `confidential.pem`:
