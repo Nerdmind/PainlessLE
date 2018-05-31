@@ -30,7 +30,7 @@ do
 		C) ARGUMENT_CERTIFICATE_ONLY="$OPTARG" ;;
 		F) ARGUMENT_CERTIFICATE_FULL="$OPTARG" ;;
 	esac
-done
+done; shift $((OPTIND-1))
 
 #===============================================================================
 # Checking if all required command-line arguments are provided
