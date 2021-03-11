@@ -5,12 +5,12 @@ Painless issuing a single [X.509 certificate](https://tools.ietf.org/html/rfc528
 The [Certbot client](https://certbot.eff.org/) must be installed on your machine because PainlessLE uses this piece of software to communicate over the [ACME protocol](https://tools.ietf.org/html/draft-ietf-acme-acme-01) with the ACME endpoint of Let's Encrypt and runs the ACME challenge. There are no known further requirements for using PainlessLE on Debian GNU/Linux at this time.
 
 ## Configuration
-Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for testing purposes. You also can define a command within `LETSENCRYPT_COMMAND_BEFORE` to shutting down a running webserver to release the HTTP(S) port for the standalone webserver before certbot runs the ACME challenge. You can restart your webserver after the ACME challenge is completed within `LETSENCRYPT_COMMAND_AFTER`.
+Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for testing purposes. You also can define a command within `LETSENCRYPT_COMMAND_BEFORE` to shut down a running webserver to release the HTTP(S) port for the standalone webserver before certbot runs the ACME challenge. You can restart your webserver after the ACME challenge is completed within `LETSENCRYPT_COMMAND_AFTER`.
 
 ## Arguments
 
 ### Required command-line options:
-* `[-i]`: Contains a string with the directory path where the certificates should be installed. This directory should already contain a manually created private key (filename can be overwritten by providing the `[-K]` option) for the Certificate-Signing-Request (CSR). It's always a good idea to handle the private keys manually because you may use [HTTP Public-Key-Pinning (HPKP)](https://tools.ietf.org/html/rfc7469) so that you must ensure, that the private key does not change.
+* `[-i]`: Contains a string with the directory path where the certificates should be installed. This directory should already contain a manually created private key (filename can be overridden by providing the `[-K]` option) for the Certificate-Signing-Request (CSR). It's always a good idea to handle the private keys manually because you may use [HTTP Public-Key-Pinning (HPKP)](https://tools.ietf.org/html/rfc7469) so that you must ensure that the private key does not change silently.
 
 * `[-h]`: Contains a colon (`:`) separated string with the DNS hostnames to include within the certificate. The string must be formatted as follows, without containing colons anywhere except **between** the hostnames: `example.org:blog.example.org:shop.example.org`
 
@@ -21,7 +21,7 @@ Change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API for tes
 * `[-F]`: Target filename for the certificate full file relative to `[-i]`
 
 ## Example
-Lets assume that you want to get a single X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have an private key with the correct UNIX file permissions stored within the following example directory with the name `confidential.pem`:
+Lets assume you want to get a single X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have an private key with the correct UNIX file permissions stored within the following example directory with the name `confidential.pem`:
 
 	/etc/painless-le/example.org/
 	└── [-rw-r----- user     group    ]  confidential.pem
