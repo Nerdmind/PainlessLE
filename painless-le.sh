@@ -47,7 +47,7 @@ done; shift $((OPTIND-1))
 # Define the ACME endpoint address
 #===============================================================================
 LETSENCRYPT_ENDPOINT="https://acme-v01.api.letsencrypt.org/directory"
-#LETSENCRYPT_ENDPOINT="https://acme-staging.api.letsencrypt.org/directory"
+#LETSENCRYPT_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
 
 #===============================================================================
 # Define commands who are executed BEFORE and AFTER the ACME challenge
