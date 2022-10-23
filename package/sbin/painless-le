@@ -46,7 +46,7 @@ done; shift $((OPTIND-1))
 #===============================================================================
 # Define the ACME endpoint address
 #===============================================================================
-LETSENCRYPT_ENDPOINT="https://acme-v01.api.letsencrypt.org/directory"
+LETSENCRYPT_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
 #LETSENCRYPT_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
 
 #===============================================================================
