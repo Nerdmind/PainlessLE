@@ -1,6 +1,6 @@
 #!/bin/bash
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-# Painless Let's Encrypt Certificate Issuing [Thomas Lange <code@nerdmind.de>] #
+# PainlessLE – A wrapper script for Certbot  [Thomas Lange <code@nerdmind.de>] #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 #                                                                              #
 # Easily get an X.509 certificate from the Let's Encrypt Certificate Authority #
@@ -8,28 +8,30 @@
 # assumes that you have an existing private key stored within your desired     #
 # install directory (with the filename which is defined in "${CONFIDENTIAL}"). #
 #                                                                              #
-# OPTION [-i]: Full path to the install directory for the certificates.        #
-# OPTION [-h]: List of hostnames for the certificate: example.org[:...]        #
-# OPTION [-K]: Filename for the existing private key relative to [-i]          #
-# OPTION [-I]: Target filename for the intermediate cert relative to [-i]      #
-# OPTION [-C]: Target filename for the certificate only file relative to [-i]  #
-# OPTION [-F]: Target filename for the certificate full file relative to [-i]  #
+# USAGE:                                                                       #
+# painless-le [OPTIONS] TARGET_DIR DNS_DOMAIN [DNS_DOMAIN ...]                 #
+#                                                                              #
+# TARGET_DIR: Path to the target directory for the certificate files.          #
+# DNS_DOMAIN: One or more DNS hostnames to include in the certficate.          #
+#                                                                              #
+# OPTION [-K]: Filename of the existing private key in target directory.       #
+# OPTION [-I]: Filename for the intermediate certificate in target directory.  #
+# OPTION [-C]: Filename for the standalone certificate in target directory.    #
+# OPTION [-F]: Filename for the certificate+intermediate in target directory.  #
 #                                                                              #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
 #===============================================================================
 # Normalize command-line arguments with GNU getopt
 #===============================================================================
-set -- $(getopt -uo i:h:K:I:C:F: -- "$@")
+set -- $(getopt -uo K:I:C:F: -- "$@")
 
 #===============================================================================
-# Parse command-line arguments with the getopts shell built-in
+# Parse command-line options with getopts
 #===============================================================================
-while getopts :i:h:K:I:C:F: option
+while getopts :K:I:C:F: option
 do
 	case $option in
-		i) ARGUMENT_DIRECTORY="$OPTARG" ;;
-		h) ARGUMENT_HOSTNAMES="$OPTARG" ;;
 		K) ARGUMENT_CONFIDENTIAL="$OPTARG" ;;
 		I) ARGUMENT_INTERMEDIATE="$OPTARG" ;;
 		C) ARGUMENT_CERTIFICATE_ONLY="$OPTARG" ;;
@@ -38,15 +40,21 @@ do
 done; shift $((OPTIND-1))
 
 #===============================================================================
-# Checking if all required command-line arguments are provided
+# Set positional argument variables
 #===============================================================================
-[ -z "${ARGUMENT_DIRECTORY}" ] && echo "$0: Missing argument: [-i directory]" >&2
-[ -z "${ARGUMENT_HOSTNAMES}" ] && echo "$0: Missing argument: [-h hostnames]" >&2
+TARGET_DIR="$1"
+DNS_DOMAIN="${@:2}"
 
 #===============================================================================
-# Abort execution if required command-line argument is missing
+# Check if required positional arguments are given
 #===============================================================================
-[ -z "${ARGUMENT_DIRECTORY}" ] || [ -z "${ARGUMENT_HOSTNAMES}" ] && exit 1
+[ -z "${TARGET_DIR}" ] && echo "$0: Missing argument: TARGET_DIR" >&2
+[ -z "${DNS_DOMAIN}" ] && echo "$0: Missing argument: DNS_DOMAIN" >&2
+
+#===============================================================================
+# Exit script if required positional argument is missing
+#===============================================================================
+[ -z "${TARGET_DIR}" ] || [ -z "${DNS_DOMAIN}" ] && exit 1
 
 #===============================================================================
 # Define the ACME endpoint address
@@ -65,10 +73,10 @@ LETSENCRYPT_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
 #===============================================================================
      OPENSSLCONF="/etc/ssl/openssl.cnf"
      REQUESTFILE=`mktemp /tmp/painless-le.XXXXXXXXXX.csr`
-    CONFIDENTIAL="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_CONFIDENTIAL:-confidential.pem}"
-    INTERMEDIATE="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_INTERMEDIATE:-intermediate.pem}"
-CERTIFICATE_ONLY="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_CERTIFICATE_ONLY:-certificate_only.pem}"
-CERTIFICATE_FULL="${ARGUMENT_DIRECTORY%/}/${ARGUMENT_CERTIFICATE_FULL:-certificate_full.pem}"
+    CONFIDENTIAL="${TARGET_DIR%/}/${ARGUMENT_CONFIDENTIAL:-confidential.pem}"
+    INTERMEDIATE="${TARGET_DIR%/}/${ARGUMENT_INTERMEDIATE:-intermediate.pem}"
+CERTIFICATE_ONLY="${TARGET_DIR%/}/${ARGUMENT_CERTIFICATE_ONLY:-certificate_only.pem}"
+CERTIFICATE_FULL="${TARGET_DIR%/}/${ARGUMENT_CERTIFICATE_FULL:-certificate_full.pem}"
 
 #===============================================================================
 # Delete Certificate-Signing-Request (CSR) file on exit
@@ -78,7 +86,7 @@ trap 'rm ${REQUESTFILE}' EXIT
 #===============================================================================
 # Generate Certificate-Signing-Request (CSR)
 #===============================================================================
-openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`echo ${ARGUMENT_HOSTNAMES} | sed "s/:/,DNS:/g"`")) \
+openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`echo ${DNS_DOMAIN} | sed "s/ /,DNS:/g"`")) \
 -new -sha256 -key "${CONFIDENTIAL}" -out "${REQUESTFILE}" -outform der -reqexts SAN -subj "/"
 
 #===============================================================================

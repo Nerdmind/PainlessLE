@@ -27,38 +27,42 @@ First, change the `LETSENCRYPT_ENDPOINT` to the address of the ACME staging API 
 You also can define a command within `LETSENCRYPT_COMMAND_BEFORE` to shut down a running web server to release the HTTP port for the standalone web server before Certbot runs the ACME challenge. You can restart your web server after the ACME challenge is completed within `LETSENCRYPT_COMMAND_AFTER`.
 
 ## Usage
+~~~
+painless-le [OPTIONS] TARGET_DIR DNS_DOMAIN [DNS_DOMAIN ...]
+painless-le /etc/painless-le/example.org/ example.org www.example.org
+~~~
 
-### Required command-line options:
-* `[-i]`: Contains a string with the directory path where the certificates should be installed. This directory should already contain a manually created private key (filename can be overridden by providing the `[-K]` option) for the Certificate-Signing-Request (CSR).
+### Required positional arguments:
+* `TARGET_DIR`: The path to the target directory where the certificate files shall be installed. The target directory must contain an existing RSA/ECDSA private key file (in PEM format).
 
-* `[-h]`: Contains a colon (`:`) separated string with the DNS hostnames to include within the certificate. The string must be formatted as follows, without containing colons anywhere except **between** the hostnames: `example.org:blog.example.org:shop.example.org`
+* `DNS_DOMAIN`: A list of one or more DNS hostnames to include within the certificate.
 
 ### Additional command-line options:
-* `[-K]`: Filename for the existing private key relative to `[-i]`
-* `[-I]`: Target filename for the intermediate certificate relative to `[-i]`
-* `[-C]`: Target filename for the certificate only file relative to `[-i]`
-* `[-F]`: Target filename for the certificate full file relative to `[-i]`
+* `[-K]`: Filename of the existing private key in target directory. (default: `confidential.pem`)
+* `[-I]`: Filename for the intermediate certificate in target directory. (default: `intermediate.pem`)
+* `[-C]`: Filename for the standalone certificate in target directory. (default: `certificate_only.pem`)
+* `[-F]`: Filename for the certificate+intermediate in target directory. (default: `certificate_full.pem`)
 
 ## Example
-PainlessLE assumes that there is already a manually created private key which is used for the Certificate-Signing-Request (CSR) by OpenSSL. The location of the private key is defined within the `"CONFIDENTIAL"` variable and the file should exist with the desired UNIX permissions that the certificate files shall inherit.
+PainlessLE assumes that there already is an RSA/ECDSA private key file (in PEM format) in the target directory. The private key file should already have the desired UNIX permissions that the new certificate files will inherit.
 
-Lets assume you want to get an X.509 certificate from the Let's Encrypt CA which includes three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have a private key with the desired UNIX file permissions stored within the following example directory with the name `confidential.pem`:
+Let's assume you want to get an X.509 certificate from the *Let's Encrypt* CA for three hostnames of your domain `example.org` (main domain, blog subdomain and shop subdomain). You already have the private key with the desired UNIX permissions stored within the following example directory:
 
 	/etc/painless-le/example.org/
 	└── [-rw-r----- user     group    ]  confidential.pem
 
-The next step is to execute `painless-le` while providing the `-i` and `-h` options which are described above. In this example, the complete command-line string with the desired target directory `/etc/painless-le/example.org` and the desired hostnames `example.org`, `blog.example.org` and `shop.example.org` looks as follows:
+The next step is to call `painless-le` while providing at least the two required positional arguments (`TARGET_DIR` and `DNS_DOMAIN`) which are described above.
 
-	painless-le -i /etc/painless-le/example.org/ -h example.org:blog.example.org:shop.example.org
+In this example, the complete command-line string with the desired target directory `/etc/painless-le/example.org` and the desired hostnames `example.org`, `blog.example.org` and `shop.example.org` looks as follows:
 
-The Certbot client will now contact the ACME challenge server and spawns a temporary standalone web server on your machine to accomplish the ACME challenge. If all works fine, you have nothing to intervene.
+	painless-le /etc/painless-le/example.org/ example.org blog.example.org shop.example.org
 
-After the command was successfully executed, you will see your certificates within your desired target directory (the certificate files will inherit the UNIX permissions of the `confidential.pem` file) and you're done:
+The Certbot client will now contact the ACME server of *Let's Encrypt* and spawns a temporary standalone web server on your machine to accomplish the ACME challenge. If all works fine, you have nothing to intervene.
+
+After the command was successfully executed, you will see your certificate files within your desired target directory (the certificate files will inherit the UNIX permissions of the `confidential.pem` file) and you're done:
 
 	/etc/painless-le/example.org/
 	├── [-rw-r----- user     group    ]  certificate_full.pem
 	├── [-rw-r----- user     group    ]  certificate_only.pem
 	├── [-rw-r----- user     group    ]  confidential.pem
 	└── [-rw-r----- user     group    ]  intermediate.pem
-
-**Note:** The new certificate files inherit the UNIX file permissions (**chmod** and **chown**) of the private key `confidential.pem`!
