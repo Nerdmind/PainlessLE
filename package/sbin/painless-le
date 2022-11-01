@@ -80,7 +80,7 @@ trap 'rm ${REQUESTFILE}' EXIT
 # Create Certificate-Signing-Request
 #===============================================================================
 openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`echo ${DNS_DOMAIN} | sed "s/ /,DNS:/g"`")) \
-	-new -sha256 -key "${CONFIDENTIAL}" -out "${REQUESTFILE}" -outform der -reqexts SAN -subj "/"
+	-new -sha256 -key "${CONFIDENTIAL}" -out "${REQUESTFILE}" -reqexts SAN -subj "/"
 
 #===============================================================================
 # Check if Certificate-Signing-Request creation failed
