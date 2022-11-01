@@ -30,7 +30,7 @@ ACME_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
 #===============================================================================
 # Normalize command-line arguments with GNU getopt
 #===============================================================================
-set -- $(getopt -uo K:I:C:F: -- "$@")
+eval set -- "$(getopt -o K:I:C:F: -- "$@")"
 
 #===============================================================================
 # Parse command-line options with getopts
