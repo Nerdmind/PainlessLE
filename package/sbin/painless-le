@@ -22,28 +22,28 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
 #===============================================================================
-# Define ACME endpoint address and BEFORE/AFTER commands
+# Define ACME endpoint URL
 #===============================================================================
 ACME_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
 #ACME_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
 
 #===============================================================================
-# Normalize command-line arguments with GNU getopt
+# Normalize command-line argument string
 #===============================================================================
 eval set -- "$(getopt -o K:I:C:F: -- "$@")"
 
 #===============================================================================
-# Parse command-line options with getopts
+# Parse command-line options
 #===============================================================================
-while getopts :K:I:C:F: option
-do
-	case $option in
-		K) OPT_CONFIDENTIAL="$OPTARG" ;;
-		I) OPT_INTERMEDIATE="$OPTARG" ;;
-		C) OPT_CERTIFICATE_ONLY="$OPTARG" ;;
-		F) OPT_CERTIFICATE_FULL="$OPTARG" ;;
+while true; do
+	case "$1" in
+		-K) OPT_CONFIDENTIAL="$2"; shift 2;;
+		-I) OPT_INTERMEDIATE="$2"; shift 2;;
+		-C) OPT_CERTIFICATE_ONLY="$2"; shift 2;;
+		-F) OPT_CERTIFICATE_FULL="$2"; shift 2;;
+		--) shift; break;;
 	esac
-done; shift $((OPTIND-1))
+done
 
 #===============================================================================
 # Set positional argument variables
