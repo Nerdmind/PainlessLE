@@ -24,8 +24,8 @@
 #===============================================================================
 # Define ACME endpoint address and BEFORE/AFTER commands
 #===============================================================================
-LETSENCRYPT_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
-#LETSENCRYPT_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
+ACME_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
+#ACME_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
 
 #LETSENCRYPT_COMMAND_BEFORE="systemctl stop apache2"
 #LETSENCRYPT_COMMAND_AFTER="systemctl start apache2"
@@ -109,7 +109,7 @@ fi
 #===============================================================================
 # Run Certbot to accomplish the ACME challenge to get the certificate
 #===============================================================================
-certbot certonly --authenticator standalone --server "${LETSENCRYPT_ENDPOINT}" --csr "${REQUESTFILE}" \
+certbot certonly --authenticator standalone --server "${ACME_ENDPOINT}" --csr "${REQUESTFILE}" \
 	--cert-path "${CERTIFICATE_ONLY}.$$" --fullchain-path "${CERTIFICATE_FULL}.$$" --chain-path "${INTERMEDIATE}.$$"
 
 #===============================================================================
