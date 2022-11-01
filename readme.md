@@ -22,9 +22,7 @@ stow -t /usr/local package
 Make sure that no unprivileged user has write permissions on `/usr/local/sbin`, the symlink targets (in case you've choosen `stow`) and/or the `painless-le` script, because PainlessLE is usually executed with `root` privileges.
 
 ## Configuration
-First, change the `ACME_ENDPOINT` variable to the address of the ACME staging API for testing purposes.
-
-You also can define a command within `LETSENCRYPT_COMMAND_BEFORE` to shut down a running web server to release the HTTP port for the standalone web server before Certbot runs the ACME challenge. You can restart your web server after the ACME challenge is completed within `LETSENCRYPT_COMMAND_AFTER`.
+You can change the `ACME_ENDPOINT` variable to the URL of the ACME staging API for testing purposes.
 
 ## Usage
 ~~~

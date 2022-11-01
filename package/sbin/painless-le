@@ -27,9 +27,6 @@
 ACME_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
 #ACME_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
 
-#LETSENCRYPT_COMMAND_BEFORE="systemctl stop apache2"
-#LETSENCRYPT_COMMAND_AFTER="systemctl start apache2"
-
 #===============================================================================
 # Normalize command-line arguments with GNU getopt
 #===============================================================================
@@ -100,13 +97,6 @@ if [ $? != 0 ]; then
 fi
 
 #===============================================================================
-# Run defined "BEFORE" command
-#===============================================================================
-if [ ! -z "${LETSENCRYPT_COMMAND_BEFORE}" ]; then
-	eval $LETSENCRYPT_COMMAND_BEFORE
-fi
-
-#===============================================================================
 # Run Certbot to accomplish the ACME challenge to get the certificate
 #===============================================================================
 certbot certonly --authenticator standalone --server "${ACME_ENDPOINT}" --csr "${REQUESTFILE}" \
@@ -136,10 +126,3 @@ for command in "chmod" "chown"; do
 	$command --reference "${CONFIDENTIAL}" \
 		"${INTERMEDIATE}" "${CERTIFICATE_ONLY}" "${CERTIFICATE_FULL}"
 done
-
-#===============================================================================
-# Run defined "AFTER" command
-#===============================================================================
-if [ ! -z "${LETSENCRYPT_COMMAND_AFTER}" ]; then
-	eval $LETSENCRYPT_COMMAND_AFTER
-fi
