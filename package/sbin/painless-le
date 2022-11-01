@@ -64,7 +64,6 @@ DNS_DOMAIN="${@:2}"
 #===============================================================================
 # Define filename variables
 #===============================================================================
-     OPENSSLCONF="/etc/ssl/openssl.cnf"
      REQUESTFILE="$(mktemp /tmp/painless-le.XXXXXX.csr)"
     CONFIDENTIAL="${TARGET_DIR%/}/${OPT_CONFIDENTIAL:-confidential.pem}"
     INTERMEDIATE="${TARGET_DIR%/}/${OPT_INTERMEDIATE:-intermediate.pem}"
@@ -77,10 +76,20 @@ CERTIFICATE_FULL="${TARGET_DIR%/}/${OPT_CERTIFICATE_FULL:-certificate_full.pem}"
 trap 'rm ${REQUESTFILE}' EXIT
 
 #===============================================================================
+# Assemble OpenSSL configuration for CSR generation
+#===============================================================================
+SUBJECT_ALT_NAME="DNS:$(echo ${DNS_DOMAIN} | sed "s/ /,DNS:/g")"
+OPENSSL_CONFIG="[req]
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[SAN]
+subjectAltName=${SUBJECT_ALT_NAME}"
+
+#===============================================================================
 # Create Certificate-Signing-Request
 #===============================================================================
-openssl req -config <(cat "${OPENSSLCONF}" <(printf "[SAN]\nsubjectAltName=DNS:`echo ${DNS_DOMAIN} | sed "s/ /,DNS:/g"`")) \
-	-new -sha256 -key "${CONFIDENTIAL}" -out "${REQUESTFILE}" -reqexts SAN -subj "/"
+openssl req -config <(echo "$OPENSSL_CONFIG") -new -sha256 -reqexts SAN \
+	-subj "/" -key "${CONFIDENTIAL}" -out "${REQUESTFILE}"
 
 #===============================================================================
 # Check if Certificate-Signing-Request creation failed
