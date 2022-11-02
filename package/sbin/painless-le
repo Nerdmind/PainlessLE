@@ -14,23 +14,19 @@
 # TARGET_DIR: Path to the target directory for the certificate files.          #
 # DNS_DOMAIN: One or more DNS hostnames to include in the certficate.          #
 #                                                                              #
-# OPTION [-K]: Filename of the existing private key in target directory.       #
-# OPTION [-I]: Filename for the intermediate certificate in target directory.  #
-# OPTION [-C]: Filename for the standalone certificate in target directory.    #
-# OPTION [-F]: Filename for the certificate+intermediate in target directory.  #
+# [-K name]: Filename of the existing private key in target directory.         #
+# [-I name]: Filename for the intermediate certificate in target directory.    #
+# [-C name]: Filename for the standalone certificate in target directory.      #
+# [-F name]: Filename for the certificate+intermediate in target directory.    #
+# [--server URL]: Specify a custom URL to an ACME endpoint.                    #
+# [--staging]: Use a staging server to obtain an invalid test certificate.     #
 #                                                                              #
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 
 #===============================================================================
-# Define ACME endpoint URL
-#===============================================================================
-ACME_ENDPOINT="https://acme-v02.api.letsencrypt.org/directory"
-#ACME_ENDPOINT="https://acme-staging-v02.api.letsencrypt.org/directory"
-
-#===============================================================================
 # Normalize command-line argument string
 #===============================================================================
-eval set -- "$(getopt -o K:I:C:F: -- "$@")"
+eval set -- "$(getopt -o K:I:C:F: -l server:,staging -- "$@")"
 
 #===============================================================================
 # Parse command-line options
@@ -41,6 +37,8 @@ while true; do
 		-I) OPT_INTERMEDIATE="$2"; shift 2;;
 		-C) OPT_CERTIFICATE_ONLY="$2"; shift 2;;
 		-F) OPT_CERTIFICATE_FULL="$2"; shift 2;;
+		--server) OPT_SERVER="$2"; shift 2;;
+		--staging) OPT_STAGING=1; shift;;
 		--) shift; break;;
 	esac
 done
@@ -97,10 +95,22 @@ if [ $? != 0 ]; then
 fi
 
 #===============================================================================
-# Run Certbot to accomplish the ACME challenge to get the certificate
+# Run Certbot to obtain the certificate
 #===============================================================================
-certbot certonly --authenticator standalone --server "${ACME_ENDPOINT}" --csr "${REQUESTFILE}" \
-	--cert-path "${CERTIFICATE_ONLY}.$$" --fullchain-path "${CERTIFICATE_FULL}.$$" --chain-path "${INTERMEDIATE}.$$"
+CERTBOT_OPTIONS=(
+	"--csr" "${REQUESTFILE}"
+	"--cert-path" "${CERTIFICATE_ONLY}.$$"
+	"--chain-path" "${INTERMEDIATE}.$$"
+	"--fullchain-path" "${CERTIFICATE_FULL}.$$"
+)
+
+[ ! -z "$OPT_STAGING" ] && \
+	CERTBOT_OPTIONS+=("--staging")
+
+[ ! -z "$OPT_SERVER" ] && [ -z "$OPT_STAGING" ] && \
+	CERTBOT_OPTIONS+=("--server" "${OPT_SERVER}")
+
+certbot certonly --authenticator standalone "${CERTBOT_OPTIONS[@]}"
 
 #===============================================================================
 # Check if Certbot failed to obtain a certificate

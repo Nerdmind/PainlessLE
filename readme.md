@@ -21,9 +21,6 @@ stow -t /usr/local package
 
 Make sure that no unprivileged user has write permissions on `/usr/local/sbin`, the symlink targets (in case you've choosen `stow`) and/or the `painless-le` script, because PainlessLE is usually executed with `root` privileges.
 
-## Configuration
-You can change the `ACME_ENDPOINT` variable to the URL of the ACME staging API for testing purposes.
-
 ## Usage
 ~~~
 painless-le [OPTIONS] TARGET_DIR DNS_DOMAIN [DNS_DOMAIN ...]
@@ -36,10 +33,12 @@ painless-le /etc/painless-le/example.org/ example.org www.example.org
 * `DNS_DOMAIN`: A list of one or more DNS hostnames to include within the certificate.
 
 ### Additional command-line options:
-* `[-K]`: Filename of the existing private key in target directory. (default: `confidential.pem`)
-* `[-I]`: Filename for the intermediate certificate in target directory. (default: `intermediate.pem`)
-* `[-C]`: Filename for the standalone certificate in target directory. (default: `certificate_only.pem`)
-* `[-F]`: Filename for the certificate+intermediate in target directory. (default: `certificate_full.pem`)
+* `[-K name]`: Filename of the existing private key in target directory. (default: `confidential.pem`)
+* `[-I name]`: Filename for the intermediate certificate in target directory. (default: `intermediate.pem`)
+* `[-C name]`: Filename for the standalone certificate in target directory. (default: `certificate_only.pem`)
+* `[-F name]`: Filename for the certificate+intermediate in target directory. (default: `certificate_full.pem`)
+* `[--server URL]`: Specify a custom URL to an ACME endpoint. If `--staging` is also given, PainlessLE will ignore any `--server` option and only passes `--staging` to Certbot.  (default: see `man certbot`)
+* `[--staging]`: Use a staging server to obtain an invalid test certificate. The server that is used is the same as the one which is listed as default for the `--staging` option in Certbot (see `man certbot`). (default: `FALSE`)
 
 ## Example
 PainlessLE assumes that there already is an RSA/ECDSA private key file (in PEM format) in the target directory. The private key file should already have the desired UNIX permissions that the new certificate files will inherit.
